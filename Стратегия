@@ -1,0 +1,67 @@
+using System;
+
+public interface IPaymentStrategy
+{
+    void Pay(decimal amount);
+}
+
+public class CreditCardPayment : IPaymentStrategy
+{
+    public void Pay(decimal amount)
+    {
+        Console.WriteLine($"Оплата {amount} тг с помощью банковской карты.");
+    }
+}
+
+public class PayPalPayment : IPaymentStrategy
+{
+    public void Pay(decimal amount)
+    {
+        Console.WriteLine($"Оплата {amount} тг через PayPal.");
+    }
+}
+
+public class CryptoPayment : IPaymentStrategy
+{
+    public void Pay(decimal amount)
+    {
+        Console.WriteLine($"Оплата {amount} тг с помощью криптовалюты.");
+    }
+}
+
+public class PaymentContext
+{
+    private IPaymentStrategy _paymentStrategy;
+
+    public PaymentContext(IPaymentStrategy paymentStrategy)
+    {
+        _paymentStrategy = paymentStrategy;
+    }
+
+    public void SetPaymentStrategy(IPaymentStrategy paymentStrategy)
+    {
+        _paymentStrategy = paymentStrategy;
+    }
+
+    public void Pay(decimal amount)
+    {
+        _paymentStrategy.Pay(amount);
+    }
+}
+
+class Program
+{
+    static void Main(string[] args)
+    {
+        PaymentContext paymentContext = new PaymentContext(new CreditCardPayment());
+        paymentContext.Pay(17590m); 
+
+        paymentContext.SetPaymentStrategy(new PayPalPayment());
+        paymentContext.Pay(20590m); 
+
+        paymentContext.SetPaymentStrategy(new CryptoPayment());
+        paymentContext.Pay(32100m); 
+
+        Console.ReadLine();
+    }
+}
